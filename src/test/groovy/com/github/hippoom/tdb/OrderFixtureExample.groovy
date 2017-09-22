@@ -36,12 +36,12 @@ class OrderFixtureExample extends Specification {
         assert orders.get(2).location == TAKE_AWAY
     }
 
-    def "it should support `first x should` api"() {
+    def "it should support `first x applyx` api"() {
 
         when:
 
         def orders = OrderFixture.listOfSize(3)
-            .theFirst(2).should { it.is(IN_STORE) }
+            .theFirst(2).apply { it.is(IN_STORE) }
             .done()
 
         then:
@@ -92,12 +92,12 @@ class OrderFixtureExample extends Specification {
         assert orders.get(2).status == PAYMENT_EXPECTED
     }
 
-    def "it should support `number x should` api"() {
+    def "it should support `number x apply` api"() {
 
         when:
 
         def orders = OrderFixture.listOfSize(3)
-            .number(2, 3).should { it.is(IN_STORE) }
+            .number(2, 3).apply { it.is(IN_STORE) }
             .done()
 
         then:
@@ -114,7 +114,7 @@ class OrderFixtureExample extends Specification {
         when:
 
         def orders = OrderFixture.listOfSize(3)
-            .number(1, 2).should { it.is(IN_STORE) }
+            .number(1, 2).apply { it.is(IN_STORE) }
             .done()
 
         then:
@@ -131,7 +131,7 @@ class OrderFixtureExample extends Specification {
         when:
 
         def orders = OrderFixture.listOfSize(3)
-            .number(2, 3).should { it.is(IN_STORE) }
+            .number(2, 3).apply { it.is(IN_STORE) }
             .done()
 
         then:
@@ -160,12 +160,12 @@ class OrderFixtureExample extends Specification {
         assert orders.get(2).location == IN_STORE
     }
 
-    def "it should support `last x should` api"() {
+    def "it should support `last x apply` api"() {
 
         when:
 
         def orders = OrderFixture.listOfSize(3)
-            .theLast(2).should { it.is(IN_STORE) }
+            .theLast(2).apply { it.is(IN_STORE) }
             .done()
 
         then:
@@ -183,6 +183,21 @@ class OrderFixtureExample extends Specification {
 
         def orders = OrderFixture.listOfSize(3)
             .all({ it.is(IN_STORE) })
+            .done()
+
+        then:
+
+        assert orders.get(0).location == IN_STORE
+        assert orders.get(1).location == IN_STORE
+        assert orders.get(2).location == IN_STORE
+    }
+
+    def "it should support `all apply` api"() {
+
+        when:
+
+        def orders = OrderFixture.listOfSize(3)
+            .all().apply { it.is(IN_STORE) }
             .done()
 
         then:

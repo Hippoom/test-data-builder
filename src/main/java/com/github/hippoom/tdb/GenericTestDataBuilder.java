@@ -21,7 +21,7 @@ public abstract class GenericTestDataBuilder<T> {
 
     public GenericTestDataBuilder theFirst(int size,
         Function<GenericTestDataBuilder, Void> wither) {
-        return theFirst(size).should(wither);
+        return theFirst(size).apply(wither);
     }
 
     public GenericTestDataBuilder<T> theFirst(int size) {
@@ -30,7 +30,7 @@ public abstract class GenericTestDataBuilder<T> {
 
     public GenericTestDataBuilder<T> theLast(int size,
         Function<GenericTestDataBuilder, Void> wither) {
-        return theLast(size).should(wither);
+        return theLast(size).apply(wither);
     }
 
     public GenericTestDataBuilder<T> theLast(int size) {
@@ -39,7 +39,7 @@ public abstract class GenericTestDataBuilder<T> {
         return number(IntStream.range(startElementSequence, lastElementSequence).toArray());
     }
 
-    public GenericTestDataBuilder<T> should(Function<GenericTestDataBuilder, Void> wither) {
+    public GenericTestDataBuilder<T> apply(Function<GenericTestDataBuilder, Void> wither) {
         this.currentElements
             .forEach(wither::apply);
         return this;
@@ -47,7 +47,7 @@ public abstract class GenericTestDataBuilder<T> {
 
     public GenericTestDataBuilder<T> number(int sequence,
         Function<GenericTestDataBuilder, Void> wither) {
-        return number(sequence).should(wither);
+        return number(sequence).apply(wither);
     }
 
     public GenericTestDataBuilder<T> number(int... sequences) {
@@ -65,8 +65,12 @@ public abstract class GenericTestDataBuilder<T> {
     }
 
     public GenericTestDataBuilder<T> all(Function<GenericTestDataBuilder, Void> wither) {
+        return all().apply(wither);
+    }
+
+    public GenericTestDataBuilder<T> all() {
         this.currentElements = new ArrayList<>(getElements());
-        return should(wither);
+        return this;
     }
 
     public abstract T build();
