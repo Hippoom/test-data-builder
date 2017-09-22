@@ -1,13 +1,17 @@
 package com.github.hippoom.tdb;
 
 import static java.util.stream.Collectors.toList;
+import static lombok.AccessLevel.PRIVATE;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.IntStream;
+import lombok.Getter;
 
 public abstract class GenericTestDataBuilder<T> {
 
+    @Getter(PRIVATE)
     private List<GenericTestDataBuilder<T>> elements;
     private List<GenericTestDataBuilder<T>> currentElements;
 
@@ -15,36 +19,24 @@ public abstract class GenericTestDataBuilder<T> {
         this.elements = elements;
     }
 
-    public GenericTestDataBuilder theFirst(int size, Function<GenericTestDataBuilder, Void> wither) {
-        for (int i = 0; i < size; i++) {
-            wither.apply(elements.get(i));
-        }
-        return this;
+    public GenericTestDataBuilder theFirst(int size,
+        Function<GenericTestDataBuilder, Void> wither) {
+        return theFirst(size).should(wither);
     }
 
     public GenericTestDataBuilder<T> theFirst(int size) {
-        final List<GenericTestDataBuilder<T>> currentElements = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            currentElements.add(elements.get(i));
-        }
-        this.currentElements = currentElements;
-        return this;
+        return number(IntStream.range(1, size + 1).toArray());
     }
 
-    public GenericTestDataBuilder<T> theLast(int size, Function<GenericTestDataBuilder, Void> wither) {
-        for (int i = 0; i < size; i++) {
-            wither.apply(elements.get(elements.size() - 1 - i));
-        }
-        return this;
+    public GenericTestDataBuilder<T> theLast(int size,
+        Function<GenericTestDataBuilder, Void> wither) {
+        return theLast(size).should(wither);
     }
 
     public GenericTestDataBuilder<T> theLast(int size) {
-        final List<GenericTestDataBuilder<T>> currentElements = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            currentElements.add(elements.get(elements.size() - 1 - i));
-        }
-        this.currentElements = currentElements;
-        return this;
+        int startElementSequence = getElements().size() - size + 1;
+        int lastElementSequence = getElements().size() + 1;
+        return number(IntStream.range(startElementSequence, lastElementSequence).toArray());
     }
 
     public GenericTestDataBuilder<T> should(Function<GenericTestDataBuilder, Void> wither) {
@@ -53,17 +45,16 @@ public abstract class GenericTestDataBuilder<T> {
         return this;
     }
 
-    public GenericTestDataBuilder<T> number(int sequence, Function<GenericTestDataBuilder, Void> wither) {
-        wither.apply(elements.get(sequence - 1));
-        return this;
+    public GenericTestDataBuilder<T> number(int sequence,
+        Function<GenericTestDataBuilder, Void> wither) {
+        return number(sequence).should(wither);
     }
 
-    public GenericTestDataBuilder<T> number(int... sequence) {
-        final List<GenericTestDataBuilder<T>> currentElements = new ArrayList<>();
-        for (int current : sequence) {
-            currentElements.add(elements.get(current - 1));
-        }
-        this.currentElements = currentElements;
+    public GenericTestDataBuilder<T> number(int... sequences) {
+        this.currentElements = IntStream.of(sequences)
+            .map(sequence -> sequence - 1)
+            .mapToObj(index -> getElements().get(index))
+            .collect(toList());
         return this;
     }
 
@@ -74,10 +65,8 @@ public abstract class GenericTestDataBuilder<T> {
     }
 
     public GenericTestDataBuilder<T> all(Function<GenericTestDataBuilder, Void> wither) {
-        for (GenericTestDataBuilder current : elements) {
-            wither.apply(current);
-        }
-        return this;
+        this.currentElements = new ArrayList<>(getElements());
+        return should(wither);
     }
 
     public abstract T build();

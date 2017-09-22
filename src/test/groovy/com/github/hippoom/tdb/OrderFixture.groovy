@@ -10,7 +10,7 @@ class OrderFixture extends GenericTestDataBuilder<Order> {
         target.with(TAKE_AWAY)
     }
 
-    def with(Location location) {
+    def is(Location location) {
         target.with(location)
         this
     }

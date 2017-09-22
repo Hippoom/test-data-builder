@@ -48,6 +48,11 @@ public class Order {
         public static Identity next() {
             return of(UUID.randomUUID().toString());
         }
+
+        @Override
+        public String toString() {
+            return value;
+        }
     }
 
     public enum Status {

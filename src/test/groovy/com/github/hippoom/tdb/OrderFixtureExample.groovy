@@ -26,7 +26,7 @@ class OrderFixtureExample extends Specification {
         when:
 
         def orders = OrderFixture.listOfSize(3)
-            .theFirst(2, { it.with(IN_STORE) })
+            .theFirst(2, { it.is(IN_STORE) })
             .done()
 
         then:
@@ -41,7 +41,7 @@ class OrderFixtureExample extends Specification {
         when:
 
         def orders = OrderFixture.listOfSize(3)
-            .theFirst(2).should { it.with(IN_STORE) }
+            .theFirst(2).should { it.is(IN_STORE) }
             .done()
 
         then:
@@ -56,7 +56,7 @@ class OrderFixtureExample extends Specification {
         when:
 
         def orders = OrderFixture.listOfSize(3)
-            .theFirst(2, { it.with(IN_STORE).payed() })
+            .theFirst(2, { it.is(IN_STORE).payed() })
             .done()
 
         then:
@@ -76,7 +76,7 @@ class OrderFixtureExample extends Specification {
         when:
 
         def orders = OrderFixture.listOfSize(3)
-            .theFirst(1, { it.with(IN_STORE).payed() })
+            .theFirst(1, { it.is(IN_STORE).payed() })
             .number(2, { it.payed() })
             .done()
 
@@ -97,7 +97,41 @@ class OrderFixtureExample extends Specification {
         when:
 
         def orders = OrderFixture.listOfSize(3)
-            .number(2, 3).should { it.with(IN_STORE) }
+            .number(2, 3).should { it.is(IN_STORE) }
+            .done()
+
+        then:
+
+        assert orders.get(0).location == TAKE_AWAY
+
+        assert orders.get(1).location == IN_STORE
+
+        assert orders.get(2).location == IN_STORE
+    }
+
+    def "`number 1..x` should be equivalent to `first x`"() {
+
+        when:
+
+        def orders = OrderFixture.listOfSize(3)
+            .number(1, 2).should { it.is(IN_STORE) }
+            .done()
+
+        then:
+
+        assert orders.get(0).location == IN_STORE
+
+        assert orders.get(1).location == IN_STORE
+
+        assert orders.get(2).location == TAKE_AWAY
+    }
+
+    def "`number ...` should be equivalent to `last x`"() {
+
+        when:
+
+        def orders = OrderFixture.listOfSize(3)
+            .number(2, 3).should { it.is(IN_STORE) }
             .done()
 
         then:
@@ -114,7 +148,7 @@ class OrderFixtureExample extends Specification {
         when:
 
         def orders = OrderFixture.listOfSize(3)
-            .theLast(2, { it.with(IN_STORE) })
+            .theLast(2, { it.is(IN_STORE) })
             .done()
 
         then:
@@ -131,7 +165,7 @@ class OrderFixtureExample extends Specification {
         when:
 
         def orders = OrderFixture.listOfSize(3)
-            .theLast(2).should { it.with(IN_STORE) }
+            .theLast(2).should { it.is(IN_STORE) }
             .done()
 
         then:
@@ -148,7 +182,7 @@ class OrderFixtureExample extends Specification {
         when:
 
         def orders = OrderFixture.listOfSize(3)
-            .all({ it.with(IN_STORE) })
+            .all({ it.is(IN_STORE) })
             .done()
 
         then:
