@@ -14,7 +14,7 @@ class OrderFixtureExample extends Specification {
         when:
 
         def orders = OrderFixture.listOfSize(3)
-            .build()
+            .done()
 
         then:
 
@@ -27,7 +27,7 @@ class OrderFixtureExample extends Specification {
 
         def orders = OrderFixture.listOfSize(3)
             .theFirst(2, { it.with(IN_STORE) })
-            .build()
+            .done()
 
         then:
 
@@ -42,7 +42,7 @@ class OrderFixtureExample extends Specification {
 
         def orders = OrderFixture.listOfSize(3)
             .theFirst(2).should { it.with(IN_STORE) }
-            .build()
+            .done()
 
         then:
 
@@ -57,7 +57,7 @@ class OrderFixtureExample extends Specification {
 
         def orders = OrderFixture.listOfSize(3)
             .theFirst(2, { it.with(IN_STORE).payed() })
-            .build()
+            .done()
 
         then:
 
@@ -78,7 +78,7 @@ class OrderFixtureExample extends Specification {
         def orders = OrderFixture.listOfSize(3)
             .theFirst(1, { it.with(IN_STORE).payed() })
             .number(2, { it.payed() })
-            .build()
+            .done()
 
         then:
 
@@ -98,7 +98,7 @@ class OrderFixtureExample extends Specification {
 
         def orders = OrderFixture.listOfSize(3)
             .number(2, 3).should { it.with(IN_STORE) }
-            .build()
+            .done()
 
         then:
 
@@ -115,7 +115,7 @@ class OrderFixtureExample extends Specification {
 
         def orders = OrderFixture.listOfSize(3)
             .theLast(2, { it.with(IN_STORE) })
-            .build()
+            .done()
 
         then:
 
@@ -132,7 +132,7 @@ class OrderFixtureExample extends Specification {
 
         def orders = OrderFixture.listOfSize(3)
             .theLast(2).should { it.with(IN_STORE) }
-            .build()
+            .done()
 
         then:
 
@@ -149,7 +149,7 @@ class OrderFixtureExample extends Specification {
 
         def orders = OrderFixture.listOfSize(3)
             .all({ it.with(IN_STORE) })
-            .build()
+            .done()
 
         then:
 

@@ -2,11 +2,11 @@ package com.github.hippoom.tdb
 
 import static com.github.hippoom.tdb.Location.TAKE_AWAY
 
-class OrderFixture {
+class OrderFixture extends GenericTestDataBuilder<Order> {
 
     def target = new Order(Order.Identity.next())
 
-    OrderFixture() {
+    private OrderFixture() {
         target.with(TAKE_AWAY)
     }
 
@@ -20,20 +20,24 @@ class OrderFixture {
         this
     }
 
-    def build() {
-        target
-    }
 
     static OrderFixture anOrder() {
         new OrderFixture()
     }
 
 
-    static OrderFixtureList listOfSize(int size) {
+    static OrderFixture listOfSize(int size) {
+        OrderFixture fixture = new OrderFixture()
         List<OrderFixture> elements = new ArrayList<>()
         for (int i = 0; i < size; i++) {
             elements.add(new OrderFixture())
         }
-        new OrderFixtureList(elements)
+        fixture.add(elements)
+        fixture
+    }
+
+    @Override
+    Order build() {
+        target
     }
 }
