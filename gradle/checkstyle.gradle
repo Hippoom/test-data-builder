@@ -1,0 +1,20 @@
+apply plugin: 'checkstyle'
+
+checkstyle {
+    configFile = file("${rootProject.projectDir}/config/checkstyle.xml")
+    toolVersion = "7.4"
+    sourceSets = [sourceSets.main]
+}
+
+// fail the build for checkstyle warning, workaround for https://github.com/gradle/gradle/issues/881
+tasks.withType(Checkstyle).each { checkstyleTask ->
+    checkstyleTask.doLast {
+        reports.all { report ->
+            def outputFile = report.destination
+            if (outputFile.exists() && outputFile.text.contains("<error ")) {
+                throw new GradleException("There were checkstyle warnings! For more info check $outputFile")
+            }
+        }
+    }
+}
+

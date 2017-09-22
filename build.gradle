@@ -1,0 +1,182 @@
+plugins {
+    id "io.spring.dependency-management" version "1.0.3.RELEASE"
+    id "com.jfrog.bintray" version "1.7.3"
+}
+
+
+apply plugin: 'idea'
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'jacoco'
+apply plugin: 'maven-publish'
+apply plugin: 'io.spring.dependency-management'
+
+apply from: "${rootProject.projectDir}/gradle/checkstyle.gradle"
+apply from: "${rootProject.projectDir}/gradle/findbugs.gradle"
+apply from: "${rootProject.projectDir}/gradle/git-hooks.gradle"
+
+group = 'com.github.hippoom'
+version = '0.1.0'
+
+
+def jdkVersion = 1.8
+
+sourceCompatibility = jdkVersion
+targetCompatibility = jdkVersion
+
+tasks.withType(JavaCompile) { options.encoding = 'utf-8' }
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencyManagement {
+    dependencies {
+        dependency "org.projectlombok:lombok:${lombokVersion}"
+        dependency "com.google.code.findbugs:annotations:${findbugsVersion}"
+        dependency group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.4.9'
+        dependency("org.hamcrest:hamcrest-library:1.3")
+        dependency group: 'junit', name: 'junit', version: '4.12'
+    }
+}
+
+dependencies {
+
+    compileOnly "org.projectlombok:lombok"
+    testCompileOnly "org.projectlombok:lombok"
+    compileOnly 'com.google.code.findbugs:annotations'
+    testCompileOnly 'com.google.code.findbugs:annotations'
+
+    compile 'org.hamcrest:hamcrest-library'
+    compile group: 'junit', name: 'junit'
+
+    testCompile group: 'org.spockframework', name: 'spock-core', version: '1.1-groovy-2.4'
+    testCompile group: 'org.codehaus.groovy', name: 'groovy-all'
+}
+
+test.finalizedBy jacocoTestReport
+
+
+idea {
+    project {
+
+        jdkName = "${jdkVersion}"
+        languageLevel = "${jdkVersion}"
+
+        ipr.withXml { xmlFile ->
+            // setup Git root
+            xmlFile.asNode().component.find { it.@name == 'VcsDirectoryMappings' }.replaceNode {
+                component(name: 'VcsDirectoryMappings') {
+                    mapping(directory: "", vcs: "Git")
+                    mapping(directory: "\$PROJECT_DIR\$", vcs: 'Git')
+                }
+            }
+
+            // setup annotationProcessing for lombok
+            xmlFile.asNode().component.find {
+                it.@name == 'CompilerConfiguration'
+            }.annotationProcessing.replaceNode {
+                annotationProcessing() {
+                    profile(default: "true", name: "Default", enabled: 'true')
+                }
+            }
+        }
+    }
+
+    module {
+        scopes.COMPILE.plus += [configurations.compileOnly]
+    }
+}
+
+jar {
+    archiveName "${rootProject.name}-${rootProject.version}.jar"
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    archiveName "${rootProject.name}-${rootProject.version}-javadoc.jar"
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    archiveName "${rootProject.name}-${rootProject.version}-sources.jar"
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+artifacts {
+    archives jar
+    archives sourcesJar
+    archives javadocJar
+}
+
+def git = 'https://github.com/Hippoom/wiremock-contract-verifier.git'
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_KEY')
+    pkg {
+        repo = 'maven'
+        name = rootProject.name
+        licenses = ['Apache-2.0']
+        vcsUrl = git
+        version {
+            gpg {
+                sign = true
+                passphrase = System.getenv('GPG_PASSPHRASE')
+            }
+        }
+    }
+    publications = ['MyPublication']
+}
+
+def pomConfig = {
+    licenses {
+        license {
+            name "The Apache Software License, Version 2.0"
+            url "https://github.com/Hippoom/wiremock-contract-verifier/blob/master/LICENSE"
+            distribution "repo"
+        }
+    }
+
+    developers {
+        developer {
+            id 'hippoom'
+            name 'Yugang Zhou'
+        }
+    }
+
+    scm {
+        url "scm:${git}"
+        connection "scm:${git}"
+        developerConnection "scm:${git}"
+    }
+}
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+
+            groupId rootProject.group
+            artifactId rootProject.name
+            version rootProject.version
+
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'Your description of the lib')
+                root.appendNode('name', 'Your name of the lib')
+                root.appendNode('url', 'https://site_for_lib.tld')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '4.1'
+}

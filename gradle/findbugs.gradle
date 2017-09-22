@@ -1,0 +1,13 @@
+apply plugin: 'findbugs'
+
+findbugs {
+    toolVersion = "3.0.1"
+    sourceSets = [sourceSets.main]
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
+}

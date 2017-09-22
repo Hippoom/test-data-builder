@@ -1,0 +1,22 @@
+# gradle
+.gradle/
+build/
+data/
+.gradletasknamecache
+
+# idea
+*.ipr
+*.iws
+*.iml
+.idea/
+out/
+.shelf/
+.ideaDataSources/
+
+# OS
+.DS_Store
+
+
+# querydsl
+
+*/src/querydsl/*
