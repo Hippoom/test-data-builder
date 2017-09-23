@@ -20,7 +20,7 @@ public class GenericTestDataListBuilder<T> {
     }
 
     public GenericTestDataListBuilder<T> theFirst(int size,
-        Function<T, Void> wither) {
+        Function<T, T> wither) {
         return theFirst(size).apply(wither);
     }
 
@@ -29,7 +29,7 @@ public class GenericTestDataListBuilder<T> {
     }
 
     public GenericTestDataListBuilder<T> theLast(int size,
-        Function<T, Void> wither) {
+        Function<T, T> wither) {
         return theLast(size).apply(wither);
     }
 
@@ -39,14 +39,14 @@ public class GenericTestDataListBuilder<T> {
         return number(IntStream.range(startElementSequence, lastElementSequence).toArray());
     }
 
-    public GenericTestDataListBuilder<T> apply(Function<T, Void> wither) {
+    public GenericTestDataListBuilder<T> apply(Function<T, T> wither) {
         this.currentElements
             .forEach(wither::apply);
         return this;
     }
 
     public GenericTestDataListBuilder<T> number(int sequence,
-        Function<T, Void> wither) {
+        Function<T, T> wither) {
         return number(sequence).apply(wither);
     }
 
@@ -58,7 +58,7 @@ public class GenericTestDataListBuilder<T> {
         return this;
     }
 
-    public GenericTestDataListBuilder<T> all(Function<T, Void> wither) {
+    public GenericTestDataListBuilder<T> all(Function<T, T> wither) {
         return all().apply(wither);
     }
 
