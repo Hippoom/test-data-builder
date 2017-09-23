@@ -48,8 +48,8 @@ dependencies {
     compileOnly 'com.google.code.findbugs:annotations'
     testCompileOnly 'com.google.code.findbugs:annotations'
 
-    compile 'org.hamcrest:hamcrest-library'
-    compile group: 'junit', name: 'junit'
+    testCompile 'org.hamcrest:hamcrest-library'
+    testCompile group: 'junit', name: 'junit'
 
     testCompile group: 'org.spockframework', name: 'spock-core', version: '1.1-groovy-2.4'
     testCompile group: 'org.codehaus.groovy', name: 'groovy-all'
