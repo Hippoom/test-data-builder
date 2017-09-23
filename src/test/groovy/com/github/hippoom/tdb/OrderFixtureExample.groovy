@@ -2,10 +2,12 @@ package com.github.hippoom.tdb
 
 import spock.lang.Specification
 
+import static GenericTestDataListBuilder.listOfSize
 import static com.github.hippoom.tdb.Location.IN_STORE
 import static com.github.hippoom.tdb.Location.TAKE_AWAY
 import static com.github.hippoom.tdb.Order.Status.PAID
 import static com.github.hippoom.tdb.Order.Status.PAYMENT_EXPECTED
+import static com.github.hippoom.tdb.OrderFixture.order
 
 class OrderFixtureExample extends Specification {
 
@@ -13,8 +15,8 @@ class OrderFixtureExample extends Specification {
 
         when:
 
-        def orders = OrderFixture.listOfSize(3)
-            .done()
+        def orders = listOfSize(3, { order().withId(it) })
+            .build { it.build() }
 
         then:
 
@@ -25,9 +27,9 @@ class OrderFixtureExample extends Specification {
 
         when:
 
-        def orders = OrderFixture.listOfSize(3)
+        def orders = listOfSize(3, { order().withId(it) })
             .theFirst(2, { it.is(IN_STORE) })
-            .done()
+            .build { it.build() }
 
         then:
 
@@ -36,13 +38,13 @@ class OrderFixtureExample extends Specification {
         assert orders.get(2).location == TAKE_AWAY
     }
 
-    def "it should support `first x applyx` api"() {
+    def "it should support `first x apply` api"() {
 
         when:
 
-        def orders = OrderFixture.listOfSize(3)
+        def orders = listOfSize(3, { order().withId(it) })
             .theFirst(2).apply { it.is(IN_STORE) }
-            .done()
+            .build { it.build() }
 
         then:
 
@@ -55,9 +57,9 @@ class OrderFixtureExample extends Specification {
 
         when:
 
-        def orders = OrderFixture.listOfSize(3)
+        def orders = listOfSize(3, { order().withId(it) })
             .theFirst(2, { it.is(IN_STORE).payed() })
-            .done()
+            .build { it.build() }
 
         then:
 
@@ -75,10 +77,10 @@ class OrderFixtureExample extends Specification {
 
         when:
 
-        def orders = OrderFixture.listOfSize(3)
+        def orders = listOfSize(3, { order().withId(it) })
             .theFirst(1, { it.is(IN_STORE).payed() })
             .number(2, { it.payed() })
-            .done()
+            .build { it.build() }
 
         then:
 
@@ -96,9 +98,9 @@ class OrderFixtureExample extends Specification {
 
         when:
 
-        def orders = OrderFixture.listOfSize(3)
+        def orders = listOfSize(3, { order().withId(it) })
             .number(2, 3).apply { it.is(IN_STORE) }
-            .done()
+            .build { it.build() }
 
         then:
 
@@ -113,9 +115,9 @@ class OrderFixtureExample extends Specification {
 
         when:
 
-        def orders = OrderFixture.listOfSize(3)
+        def orders = listOfSize(3, { order().withId(it) })
             .number(1, 2).apply { it.is(IN_STORE) }
-            .done()
+            .build { it.build() }
 
         then:
 
@@ -130,9 +132,9 @@ class OrderFixtureExample extends Specification {
 
         when:
 
-        def orders = OrderFixture.listOfSize(3)
+        def orders = listOfSize(3, { order().withId(it) })
             .number(2, 3).apply { it.is(IN_STORE) }
-            .done()
+            .build { it.build() }
 
         then:
 
@@ -147,9 +149,9 @@ class OrderFixtureExample extends Specification {
 
         when:
 
-        def orders = OrderFixture.listOfSize(3)
+        def orders = listOfSize(3, { order().withId(it) })
             .theLast(2, { it.is(IN_STORE) })
-            .done()
+            .build { it.build() }
 
         then:
 
@@ -164,9 +166,9 @@ class OrderFixtureExample extends Specification {
 
         when:
 
-        def orders = OrderFixture.listOfSize(3)
+        def orders = listOfSize(3, { order().withId(it) })
             .theLast(2).apply { it.is(IN_STORE) }
-            .done()
+            .build { it.build() }
 
         then:
 
@@ -181,9 +183,9 @@ class OrderFixtureExample extends Specification {
 
         when:
 
-        def orders = OrderFixture.listOfSize(3)
+        def orders = listOfSize(3, { order().withId(it) })
             .all({ it.is(IN_STORE) })
-            .done()
+            .build { it.build() }
 
         then:
 
@@ -196,9 +198,9 @@ class OrderFixtureExample extends Specification {
 
         when:
 
-        def orders = OrderFixture.listOfSize(3)
+        def orders = listOfSize(3, { order().withId(it) })
             .all().apply { it.is(IN_STORE) }
-            .done()
+            .build { it.build() }
 
         then:
 
