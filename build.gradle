@@ -115,7 +115,7 @@ artifacts {
     archives javadocJar
 }
 
-def git = 'https://github.com/Hippoom/wiremock-contract-verifier.git'
+def git = 'https://github.com/Hippoom/test-data-builder.git'
 
 bintray {
     user = System.getenv('BINTRAY_USER')
@@ -139,7 +139,7 @@ def pomConfig = {
     licenses {
         license {
             name "The Apache Software License, Version 2.0"
-            url "https://github.com/Hippoom/wiremock-contract-verifier/blob/master/LICENSE"
+            url "https://github.com/Hippoom/test-data-builder/blob/master/LICENSE"
             distribution "repo"
         }
     }
@@ -171,9 +171,9 @@ publishing {
 
             pom.withXml {
                 def root = asNode()
-                root.appendNode('description', 'Your description of the lib')
-                root.appendNode('name', 'Your name of the lib')
-                root.appendNode('url', 'https://site_for_lib.tld')
+                root.appendNode('description', 'Test data builder support')
+                root.appendNode('name', 'Test Data Builder')
+                root.appendNode('url', "${git}")
                 root.children().last() + pomConfig
             }
         }
