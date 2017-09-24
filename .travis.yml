@@ -17,7 +17,7 @@ script: ./gradlew test
 
 deploy:
   - provider: script
-    script: ./gradlew bintrayUpload -p core
+    script: ./gradlew bintrayUpload
     on:
       tags: true
 
