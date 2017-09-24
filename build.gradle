@@ -16,7 +16,7 @@ apply from: "${rootProject.projectDir}/gradle/findbugs.gradle"
 apply from: "${rootProject.projectDir}/gradle/git-hooks.gradle"
 
 group = 'com.github.hippoom'
-version = '0.1.0'
+version = '0.2.0'
 
 
 def jdkVersion = 1.8
