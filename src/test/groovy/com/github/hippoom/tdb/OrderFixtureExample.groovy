@@ -2,7 +2,7 @@ package com.github.hippoom.tdb
 
 import spock.lang.Specification
 
-import static GenericTestDataListBuilder.listOfSize
+import static com.github.hippoom.tdb.GenericTestDataListBuilder.listOfSize
 import static com.github.hippoom.tdb.Location.IN_STORE
 import static com.github.hippoom.tdb.Location.TAKE_AWAY
 import static com.github.hippoom.tdb.Order.Status.PAID
@@ -201,6 +201,21 @@ class OrderFixtureExample extends Specification {
         def orders = listOfSize(3, { order().withId(it) })
             .all().apply { it.is(IN_STORE) }
             .build { it.build() }
+
+        then:
+
+        assert orders.get(0).location == IN_STORE
+        assert orders.get(1).location == IN_STORE
+        assert orders.get(2).location == IN_STORE
+    }
+
+    def "it should provide built-in `build` implementation"() {
+
+        when:
+
+        def orders = listOfSize(3, { order().withId(it) })
+            .all().apply { it.is(IN_STORE) }
+            .build()
 
         then:
 
