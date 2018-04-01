@@ -16,7 +16,7 @@ import static com.github.hippoom.tdb.GenericTestDataListBuilder.listOfSize;
 
 List<Order> orders = listOfSize(5, // (1)
     sequence -> new OrderBuilder() // (2)
-).build();                         //(3)
+).build();                         // (3)
 ```
 
 > (1) declaring the list should contain 5 elements
@@ -37,10 +37,10 @@ import static com.github.hippoom.tdb.Location.IN_STORE
 import static com.github.hippoom.tdb.Location.TAKE_AWAY
 
 List<Order> orders = listOfSize(5, sequence -> new OrderBuilder())
-    					theFirst(2, builder -> builder.is(TAKE_AWAY)) 		// (1)
-						.number(3, builder -> builder.is(IN_STORE))   		// (2)
-                        .theLast(2, builder -> builder.paid())   			// (3)
-						.build();
+    					.theFirst(2, builder -> builder.is(TAKE_AWAY)) // (1)
+    					.number(3, builder -> builder.is(IN_STORE))    // (2)
+    					.theLast(2, builder -> builder.paid())         // (3)
+    					.build();
 ```
 
 > (1) declaring the first two elements apply a `Function<OrderBuilder, OrderBuilder>` that customizes the element
@@ -60,8 +60,8 @@ import static com.github.hippoom.tdb.GenericTestDataListBuilder.listOfSize;
 import static com.github.hippoom.tdb.Location.TAKE_AWAY
 
 List<Order> orders = listOfSize(5, sequence -> new OrderBuilder())
-    					.number(2, 4).apply(builder -> builder.is(TAKE_AWAY)) 		// (1)
-						.build();
+    					.number(2, 4).apply(builder -> builder.is(TAKE_AWAY)) // (1)
+    					.build();
 ```
 > (1) declaring the second and fourth element should apply a `Function<OrderBuilder, OrderBuilder>` that customizes the element
 
@@ -74,8 +74,8 @@ import static com.github.hippoom.tdb.GenericTestDataListBuilder.listOfSize;
 import static com.github.hippoom.tdb.Location.TAKE_AWAY
 
 List<Order> orders = listOfSize(5, sequence -> new OrderBuilder())
-    					.range(2, 4).apply(builder -> builder.is(TAKE_AWAY)) 		// (1)
-						.build();
+    					.range(2, 4).apply(builder -> builder.is(TAKE_AWAY)) // (1)
+    					.build();
 ```
 
 > (1) declaring from the second(inclusive) to the fourth(inclusive) elements should apply a `Function<OrderBuilder, OrderBuilder>` that customizes the element
@@ -87,7 +87,7 @@ List<Order> orders = listOfSize(5, sequence -> new OrderBuilder())
 import static com.github.hippoom.tdb.GenericTestDataListBuilder.listOfSize;
 
 List<Order> orders = listOfSize(5, sequence -> new OrderBuilder())
-    					.build(builder -> builder.anotherBuild());  //(1)
+    					.build(builder -> builder.anotherBuild()); //(1)
 ```
 > (1) calls `anotherBuild()` instead of `build()` to generate the elements
 
