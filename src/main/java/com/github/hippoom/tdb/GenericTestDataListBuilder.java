@@ -60,6 +60,11 @@ public class GenericTestDataListBuilder<T> {
         return this;
     }
 
+    public GenericTestDataListBuilder<T> range(int fromSequence, int toSequence) {
+        this.currentElements = getElements().subList(fromSequence - 1, toSequence);
+        return this;
+    }
+
     public GenericTestDataListBuilder<T> all(Function<T, T> wither) {
         return all().apply(wither);
     }
@@ -87,5 +92,4 @@ public class GenericTestDataListBuilder<T> {
                 .mapToObj(byDefault::apply)
                 .collect(toList()));
     }
-
 }

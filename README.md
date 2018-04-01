@@ -25,6 +25,8 @@ List<Order> orders = listOfSize(5, // (1)
 >
 > (3) building the list, it calls `OrderBuild.build()` by default  to generate `Order`
 
+
+
 ###### Customizing the element differs
 
 Now each element has a default value,  you just customize the element differ in the current test case:
@@ -47,13 +49,14 @@ List<Order> orders = listOfSize(5, sequence -> new OrderBuilder())
 >
 > (3)  declaring the last two elements apply a `Function<OrderBuilder, OrderBuilder>` 
 
+
+
 ###### Customizing the multiple elements with `number()`
 
 Sometimes you want to customize multiple elements in the middle of the list. The `number()` has a overloaded variation to help you:
 
 ```java
 import static com.github.hippoom.tdb.GenericTestDataListBuilder.listOfSize;
-import static com.github.hippoom.tdb.Location.IN_STORE
 import static com.github.hippoom.tdb.Location.TAKE_AWAY
 
 List<Order> orders = listOfSize(5, sequence -> new OrderBuilder())
@@ -62,16 +65,32 @@ List<Order> orders = listOfSize(5, sequence -> new OrderBuilder())
 ```
 > (1) declaring the second and fourth element should apply a `Function<OrderBuilder, OrderBuilder>` that customizes the element
 
+
+
+###### What if I want to customize a range of consecutive elements in the middle of the list
+
+```java
+import static com.github.hippoom.tdb.GenericTestDataListBuilder.listOfSize;
+import static com.github.hippoom.tdb.Location.TAKE_AWAY
+
+List<Order> orders = listOfSize(5, sequence -> new OrderBuilder())
+    					.range(2, 4).apply(builder -> builder.is(TAKE_AWAY)) 		// (1)
+						.build();
+```
+
+> (1) declaring from the second(inclusive) to the fourth(inclusive) elements should apply a `Function<OrderBuilder, OrderBuilder>` that customizes the element
+
+## 
+
 ###### What if the Builder has a different build method other than `build()`
 ```java
 import static com.github.hippoom.tdb.GenericTestDataListBuilder.listOfSize;
-import static com.github.hippoom.tdb.Location.IN_STORE
-import static com.github.hippoom.tdb.Location.TAKE_AWAY
 
 List<Order> orders = listOfSize(5, sequence -> new OrderBuilder())
     					.build(builder -> builder.anotherBuild());  //(1)
 ```
 > (1) calls `anotherBuild()` instead of `build()` to generate the elements
+
 
 
 ## License

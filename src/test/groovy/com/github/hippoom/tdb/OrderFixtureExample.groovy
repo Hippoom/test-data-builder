@@ -111,7 +111,24 @@ class OrderFixtureExample extends Specification {
         assert orders.get(2).location == IN_STORE
     }
 
-    def "`number 1..x` should be equivalent to `first x`"() {
+    def "`number 1..x` is not equivalent to `first x`"() {
+
+        when:
+
+        def orders = listOfSize(3, { order().withId(it) })
+            .number(1, 3).apply { it.is(IN_STORE) }
+            .build { it.build() }
+
+        then:
+
+        assert orders.get(0).location == IN_STORE
+
+        assert orders.get(1).location == TAKE_AWAY
+
+        assert orders.get(2).location == IN_STORE
+    }
+
+    def "`number ...` is not equivalent to `last x`"() {
 
         when:
 
@@ -126,23 +143,6 @@ class OrderFixtureExample extends Specification {
         assert orders.get(1).location == IN_STORE
 
         assert orders.get(2).location == TAKE_AWAY
-    }
-
-    def "`number ...` should be equivalent to `last x`"() {
-
-        when:
-
-        def orders = listOfSize(3, { order().withId(it) })
-            .number(2, 3).apply { it.is(IN_STORE) }
-            .build { it.build() }
-
-        then:
-
-        assert orders.get(0).location == TAKE_AWAY
-
-        assert orders.get(1).location == IN_STORE
-
-        assert orders.get(2).location == IN_STORE
     }
 
     def "it should support `last x` api"() {
@@ -177,6 +177,27 @@ class OrderFixtureExample extends Specification {
         assert orders.get(1).location == IN_STORE
 
         assert orders.get(2).location == IN_STORE
+    }
+
+    def "it should support `range x,y apply` api"() {
+
+        when:
+
+        def orders = listOfSize(5, { order().withId(it) })
+            .range(2, 4).apply { it.is(IN_STORE) }
+            .build { it.build() }
+
+        then:
+
+        assert orders.get(0).location == TAKE_AWAY
+
+        assert orders.get(1).location == IN_STORE
+
+        assert orders.get(2).location == IN_STORE
+
+        assert orders.get(3).location == IN_STORE
+
+        assert orders.get(4).location == TAKE_AWAY
     }
 
     def "it should support `all` api"() {
