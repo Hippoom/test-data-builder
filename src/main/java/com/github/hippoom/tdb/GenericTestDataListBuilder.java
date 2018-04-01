@@ -192,6 +192,27 @@ public class GenericTestDataListBuilder<T> {
      *
      * @param fromSequence starts from 1, inclusive
      * @param toSequence   starts from 1, inclusive
+     * @param wither       customize the selected elements
+     * @return this for fluent api.
+     * @see #range(int, int)
+     */
+    public GenericTestDataListBuilder<T> range(int fromSequence, int toSequence, Function<T, T> wither) {
+        return range(fromSequence, toSequence).apply(wither);
+    }
+
+    /**
+     * Select consecutive elements of the list.
+     * <p> Example: </p>
+     * <pre>
+     * {@code
+     *     List<Order> orders = listOfSize(5, sequence -> new OrderBuilder())
+     *         .range(2, 4).apply(builder -> builder.paid())
+     *         .build();
+     * }
+     * </pre>
+     *
+     * @param fromSequence starts from 1, inclusive
+     * @param toSequence   starts from 1, inclusive
      * @return this for fluent api.
      * @see #apply(Function)
      */

@@ -179,6 +179,27 @@ class OrderFixtureExample extends Specification {
         assert orders.get(2).location == IN_STORE
     }
 
+    def "it should support `range x,y` api"() {
+
+        when:
+
+        def orders = listOfSize(5, { order().withId(it) })
+            .range(2, 4, { it.is(IN_STORE) })
+            .build { it.build() }
+
+        then:
+
+        assert orders.get(0).location == TAKE_AWAY
+
+        assert orders.get(1).location == IN_STORE
+
+        assert orders.get(2).location == IN_STORE
+
+        assert orders.get(3).location == IN_STORE
+
+        assert orders.get(4).location == TAKE_AWAY
+    }
+
     def "it should support `range x,y apply` api"() {
 
         when:
