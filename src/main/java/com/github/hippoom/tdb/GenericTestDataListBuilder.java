@@ -1,15 +1,16 @@
 package com.github.hippoom.tdb;
 
-import static java.util.stream.Collectors.toList;
-import static lombok.AccessLevel.PRIVATE;
+import com.github.hippoom.tdb.reflection.MethodInvoker;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
-import com.github.hippoom.tdb.reflection.MethodInvoker;
-import lombok.Getter;
+import static java.util.stream.Collectors.toList;
+import static lombok.AccessLevel.PRIVATE;
 
 /**
  * Building a List of test data.
@@ -136,6 +137,25 @@ public class GenericTestDataListBuilder<T> {
     }
 
     /**
+     * Currently private as we don't know how to deal with
+     * <pre>
+     * {@code
+     *     List<Order> orders = listOfSize(5, sequence -> new OrderBuilder())
+     *         .number(1).apply((builder, seq) -> build.withAmount(seq))
+     *         .build();
+     * }
+     * </pre>
+     *
+     * @param wither to customize the test data builder with sequence (starts from 1)
+     * @return this
+     */
+    private GenericTestDataListBuilder<T> applyWithSeq(BiFunction<T, Integer, T> wither) {
+        IntStream.range(0, currentElements.size())
+            .forEach(i -> wither.apply(this.currentElements.get(i), i + 1));
+        return this;
+    }
+
+    /**
      * Apply a function to the number n element of the list, starts from 1.
      * <p> Example: </p>
      * <pre>
@@ -257,6 +277,25 @@ public class GenericTestDataListBuilder<T> {
     public GenericTestDataListBuilder<T> all() {
         this.currentElements = new ArrayList<>(getElements());
         return this;
+    }
+
+    /**
+     * Apply a function (with sequence, starts with 1) to all elements.
+     * <p> Example: </p>
+     * <pre>
+     * {@code
+     *     List<Order> orders = listOfSize(5, sequence -> new OrderBuilder())
+     *         .all((builder, seq) -> builder.paid(seq))
+     *         .build();
+     * }
+     * </pre>
+     *
+     * @param wither to customize the builders
+     * @return this for fluent api.
+     * @see #all()
+     */
+    public GenericTestDataListBuilder<T> allWithSeq(BiFunction<T, Integer, T> wither) {
+        return all().applyWithSeq(wither);
     }
 
     /**

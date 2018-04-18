@@ -251,6 +251,21 @@ class OrderFixtureExample extends Specification {
         assert orders.get(2).location == IN_STORE
     }
 
+    def "it should support `allWithSequence` api"() {
+
+        when:
+
+        def orders = listOfSize(3, { order().withId(it) })
+            .allWithSeq{ builder, seq -> builder.withId(seq) }
+            .build { it.build() }
+
+        then:
+
+        assert orders.get(0).id.value == "1"
+        assert orders.get(1).id.value == "2"
+        assert orders.get(2).id.value == "3"
+    }
+
     def "it should provide built-in `build` implementation"() {
 
         when:
