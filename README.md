@@ -66,12 +66,53 @@ List<Order> orders = listOfSize(5, sequence -> new OrderBuilder())
 > (1) declaring the second and fourth element should apply a `Function<OrderBuilder, OrderBuilder>` that customizes the element
 
 
+###### Customizing the multiple elements with `all()`
+
+Sometimes you want to customize all elements. The `all()` can help you:
+
+```java
+import static com.github.hippoom.tdb.GenericTestDataListBuilder.listOfSize;
+import static com.github.hippoom.tdb.Location.TAKE_AWAY
+
+List<Order> orders = listOfSize(5, sequence -> new OrderBuilder())
+    					.all().apply(builder -> builder.is(TAKE_AWAY)) // (1)
+    					.build();
+```
+> (1) declaring all elements should apply a `Function<OrderBuilder, OrderBuilder>` that customizes the element
+
+You can also use the variation `all(Function<T, T> function)`:
+
+```java
+import static com.github.hippoom.tdb.GenericTestDataListBuilder.listOfSize;
+import static com.github.hippoom.tdb.Location.TAKE_AWAY;
+
+List<Order> orders = listOfSize(5, sequence -> new OrderBuilder())
+    					.all(builder -> builder.is(TAKE_AWAY)) // (1)
+    					.build();
+```
+> (1) declaring all elements should apply a `Function<OrderBuilder, OrderBuilder>` that customizes the element
+
+###### Customizing the multiple elements with `allWithSeq()`
+
+Sometimes you want to customize all elements but with dynamic data based on the sequence of the element (starts from 1). 
+The `allWithSeq()` can help you:
+
+```java
+import static com.github.hippoom.tdb.GenericTestDataListBuilder.listOfSize;
+import static com.github.hippoom.tdb.Location.TAKE_AWAY;
+
+List<Order> orders = listOfSize(5, sequence -> new OrderBuilder())
+    					.allWithSeq(builder, seq -> builder.withId(seq)) // (1)
+    					.build();
+```
+> (1) declaring all elements should apply a `BiFunction<OrderBuilder, Integer, OrderBuilder>` that customizes the element
+
 
 ###### What if I want to customize a range of consecutive elements in the middle of the list
 
 ```java
 import static com.github.hippoom.tdb.GenericTestDataListBuilder.listOfSize;
-import static com.github.hippoom.tdb.Location.TAKE_AWAY
+import static com.github.hippoom.tdb.Location.TAKE_AWAY;
 
 List<Order> orders = listOfSize(5, sequence -> new OrderBuilder())
     					.range(2, 4).apply(builder -> builder.is(TAKE_AWAY)) // (1)
@@ -80,7 +121,6 @@ List<Order> orders = listOfSize(5, sequence -> new OrderBuilder())
 
 > (1) declaring from the second(inclusive) to the fourth(inclusive) elements should apply a `Function<OrderBuilder, OrderBuilder>` that customizes the element
 
-## 
 
 ###### What if the Builder has a different build method other than `build()`
 ```java
